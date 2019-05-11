@@ -1,0 +1,20 @@
+{
+  "array": [
+    1,
+    2,
+    3
+  ],
+  "boolean": true,
+  "null": null,
+  "number": 123,
+  "object": {
+    "a": "b",
+    "c": "d",
+    "e": "f"
+  },
+  "date": "2014-01-01T23:28:56.782Z",
+  "string": "Hello World",
+  "emptyObject": {},
+  "emptyString": "",
+  "emptyArray": []
+}

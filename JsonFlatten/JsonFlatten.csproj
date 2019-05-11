@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>GFoley83</Authors>
+    <PackageTags>JSON, Flatten, Unflatten, Dictionary</PackageTags>
+    <Description>Flatten a JSON.NET JObject to a Dictionary&lt;string, object&gt; and vice versa.</Description>
+    <AssemblyName>JsonFlatten</AssemblyName>
+    <Copyright>https://opensource.org/licenses/MIT</Copyright>
+    <PackageProjectUrl>https://github.com/GFoley83/JsonFlatten</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/GFoley83/JsonFlatten</RepositoryUrl>
+    <Version>1.0.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+  </ItemGroup>
+
+</Project>
