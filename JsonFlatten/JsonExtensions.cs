@@ -42,12 +42,20 @@ namespace JsonFlatten
                 .Aggregate(new Dictionary<string, object>(), (properties, jToken) =>
                 {
                     var value = (jToken as JValue)?.Value;
+                    var path = jToken.Path;
+
+                    // Weird bug with JSON.NET whereby parsing a property that contains a "[", "]" or "." 
+                    // wraps the entire property name in brackets
+                    if (jToken.Path.StartsWith("['"))
+                    {
+                        path = jToken.Path.Replace("['", "").Replace("']", "");
+                    }
 
                     if (!includeNullAndEmptyValues)
                     {
                         if (value?.Equals("") == false)
                         {
-                            properties.Add(jToken.Path, value);
+                            properties.Add(path, value);
                         }
                         return properties;
                     }
@@ -62,7 +70,7 @@ namespace JsonFlatten
                         value = new object();
                     }
 
-                    properties.Add(jToken.Path, value);
+                    properties.Add(path, value);
 
                     return properties;
                 });

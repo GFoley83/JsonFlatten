@@ -1,9 +1,7 @@
-﻿using JsonFlatten.Tests.Types;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Xunit;
 using Xunit.Priority;
 
@@ -119,21 +117,23 @@ namespace JsonFlatten.Tests
         [Fact]
         private void Can_convert_a_flattened_dictionary_to_a_JSON_string()
         {
-            var flattenedJsonDictToJsonString = fixture.FlattendSimpleJson.ToJsonString();
+            var simpleFlattenedJsonDictToJsonString = fixture.FlattendSimpleJson.ToJsonString();
             // Compare original JObject to the flattened dict converted to JSON
-            Assert.True(JToken.DeepEquals(fixture.SimpleJson, JObject.Parse(flattenedJsonDictToJsonString)));
+            Assert.True(JToken.DeepEquals(fixture.SimpleJson, JObject.Parse(simpleFlattenedJsonDictToJsonString)));
 
-            var complexJsonDictToJsonString = fixture.FlattenedComplexJson.ToJsonString();
+            var complexFlattenedJsonDictToJsonString = fixture.FlattenedComplexJson.ToJsonString();
             // Compare original JObject to the flattened dict converted to JSON
-            Assert.True(JToken.DeepEquals(fixture.ComplexJson, JObject.Parse(complexJsonDictToJsonString)));
+            Assert.True(JToken.DeepEquals(fixture.ComplexJson, JObject.Parse(complexFlattenedJsonDictToJsonString)));
 
-            flattenedJsonDictToJsonString = fixture.FlattendSimpleJson.ToJsonString(false);
-            // Compare original JObject to the flattened dict converted to JSON
-            Assert.True(JToken.DeepEquals(fixture.SimpleJson, JObject.Parse(flattenedJsonDictToJsonString)));
+            simpleFlattenedJsonDictToJsonString = fixture.FlattendSimpleJson.ToJsonString(false);
+            Assert.True(simpleFlattenedJsonDictToJsonString.Split(',').Length == 14);
+            Assert.True(simpleFlattenedJsonDictToJsonString.IndexOf("\"array[2]\": 3,") > -1);
+            Assert.True(JToken.DeepEquals(simpleFlattenedJsonDictToJsonString.Flatten().Unflatten(), fixture.SimpleJson));
 
-            complexJsonDictToJsonString = fixture.FlattenedComplexJson.ToJsonString(false);
-            // Compare original JObject to the flattened dict converted to JSON
-            Assert.True(JToken.DeepEquals(fixture.ComplexJson, JObject.Parse(complexJsonDictToJsonString)));
+            complexFlattenedJsonDictToJsonString = fixture.FlattenedComplexJson.ToJsonString(false);
+            Assert.True(complexFlattenedJsonDictToJsonString.Split(',').Length == 1150);
+            Assert.True(complexFlattenedJsonDictToJsonString.IndexOf("\"posts[0].categories.goatchild.parent\": 236920") > -1);
+            Assert.True(JToken.DeepEquals(complexFlattenedJsonDictToJsonString.Flatten().Unflatten(), fixture.ComplexJson));
         }
     }
 }
