@@ -5,12 +5,17 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>GFoley83</Authors>
     <PackageTags>JSON, Flatten, Unflatten, Dictionary</PackageTags>
-    <Description>Flatten a JSON.NET JObject to a Dictionary&lt;string, object&gt; and vice versa.</Description>
+    <Description>Flatten a raw JSON string, .NET type or JSON.NET JObject to a Dictionary&lt;string, object&gt; or vice versa.
+The exact JSON structure is preserved via the dictionary key e.g. "myArray[3].someObject.myProperty"
+
+Supports flattening &amp; unflattening complex, hierarchical JSON objects also e.g. JSON Schema objects.
+Optional includeNullAndEmptyValues parameter, that when set to false, ignores null and empty properties (e.g. null, "", {}, []) when flattening.
+If the dictionary keys are valid JSON paths e.g. "myArray[0].someObject.myProperty" then the correct JSON structure will be created.</Description>
     <AssemblyName>JsonFlatten</AssemblyName>
     <Copyright>https://opensource.org/licenses/MIT</Copyright>
     <PackageProjectUrl>https://github.com/GFoley83/JsonFlatten</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GFoley83/JsonFlatten</RepositoryUrl>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

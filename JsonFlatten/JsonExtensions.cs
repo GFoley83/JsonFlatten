@@ -6,8 +6,31 @@ using System.Text.RegularExpressions;
 
 namespace JsonFlatten
 {
+    /// <summary>
+    /// Extension methods to flatten JSON-based structures to a dictionary.
+    /// The path of the JSON property becomes the key when flattening so unflattening will 
+    /// return the dictionary to the original JSON structure.
+    /// </summary>
     public static class JsonFlattenExtensions
     {
+        /// <summary>
+        /// Flattens a .NET type to a Dictionary.<c>null</c>, <c>""</c>, <c>[]</c> and <c>{}</c> are preserved by default.
+        /// Supports complex types with nested property types and collections.
+        /// </summary>
+        /// <param name="type">.NET type to flatten</param>
+        /// <param name="includeNullAndEmptyValues">Set to false to ignore JSON properties that are null, "", [] and {} when flattening</param>
+        public static IDictionary<string, object> Flatten<T>(this T type, bool includeNullAndEmptyValues = true) where T : class =>
+            Flatten(JObject.FromObject(type), includeNullAndEmptyValues);
+
+        /// <summary>
+        /// Flattens a raw JSON string to a Dictionary.<c>null</c>, <c>""</c>, <c>[]</c> and <c>{}</c> are preserved by default.
+        /// Supports complex, hierarchical JSON objects also.
+        /// </summary>
+        /// <param name="rawJson">Raw JSON string to flatten</param>
+        /// <param name="includeNullAndEmptyValues">Set to false to ignore JSON properties that are null, "", [] and {} when flattening</param>
+        public static IDictionary<string, object> Flatten(this string rawJson, bool includeNullAndEmptyValues = true) =>
+            Flatten(JObject.Parse(rawJson), includeNullAndEmptyValues);
+
         /// <summary>
         /// Flattens a JObject to a Dictionary.<c>null</c>, <c>""</c>, <c>[]</c> and <c>{}</c> are preserved by default
         /// </summary>
@@ -15,7 +38,7 @@ namespace JsonFlatten
         /// <param name="includeNullAndEmptyValues">Set to false to ignore JSON properties that are null, "", [] and {} when flattening</param>
         public static IDictionary<string, object> Flatten(this JObject jsonObject, bool includeNullAndEmptyValues = true) => jsonObject
                 .Descendants()
-                .Where(p => !p.Any())
+                .Where(nestedValues => !nestedValues.Any())
                 .Aggregate(new Dictionary<string, object>(), (properties, jToken) =>
                 {
                     var value = (jToken as JValue)?.Value;
@@ -45,7 +68,15 @@ namespace JsonFlatten
                 });
 
         /// <summary>
-        /// Unflattens an already flattened JSON Dictionary to its original JSON structure
+        /// Unflattens a Dictionary to a .NET type.
+        /// If the dictionary keys are valid JSON paths e.g. <c>myArray[0].someObject.myProperty</c> then the correct JSON structure will be created.
+        /// </summary>
+        /// <param name="flattenedJsonKeyValues">Dictionary to unflatten</param>
+        public static T Unflatten<T>(this IDictionary<string, object> flattenedJsonKeyValues) => Unflatten(flattenedJsonKeyValues).ToObject<T>();
+
+        /// <summary>
+        /// Unflattens a Dictionary to a JObject.
+        /// If the dictionary keys are valid JSON paths e.g. <c>myArray[0].someObject.myProperty</c> then the correct JSON structure will be created.
         /// </summary>
         /// <param name="flattenedJsonKeyValues">Dictionary to unflatten</param>
         public static JObject Unflatten(this IDictionary<string, object> flattenedJsonKeyValues)
@@ -68,6 +99,30 @@ namespace JsonFlatten
                 }
             }
             return result as JObject;
+        }
+
+        /// <summary>
+        /// Converts a dictionary into a raw JSON string.
+        /// If the dictionary keys are valid JSON paths e.g. <c>myArray[0].someObject.myProperty</c> and <c>useKeysForJsonStructure</c> is <c>true</c>, then the correct JSON structure will be created.
+        /// </summary>
+        /// <param name="flattenedJsonKeyValues"></param>
+        /// <param name="useKeysForJsonStructure"></param>
+        /// <returns></returns>
+        public static string ToJsonString(this IDictionary<string, object> flattenedJsonKeyValues, bool useKeysForJsonStructure = true)
+        {
+            if (useKeysForJsonStructure)
+            {
+                return Unflatten(flattenedJsonKeyValues).ToString();
+            }
+
+            var obj = new JObject();
+            foreach (var keyValue in flattenedJsonKeyValues)
+            {
+                JToken value = keyValue.Value != null ? JToken.FromObject(keyValue.Value) : null;
+                obj.Add(keyValue.Key, value);
+            }
+
+            return obj.ToString();
         }
 
         /// <summary>

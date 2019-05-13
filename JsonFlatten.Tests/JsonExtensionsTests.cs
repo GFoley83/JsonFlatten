@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using JsonFlatten.Tests.Types;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Xunit;
 using Xunit.Priority;
 
@@ -42,7 +44,6 @@ namespace JsonFlatten.Tests
             fixture.FlattendSimpleJsonWithoutEmpty = fixture.SimpleJson.Flatten(includeNullAndEmptyValues: false);
             fixture.FlattenedComplexJsonWithoutEmpty = fixture.ComplexJson.Flatten(includeNullAndEmptyValues: false);
         }
-
 
         [Fact]
         public void Flattened_JObject_has_correct_values()
@@ -113,6 +114,26 @@ namespace JsonFlatten.Tests
         {
             Assert.True(JToken.DeepEquals(fixture.FlattendSimpleJson.Unflatten(), fixture.SimpleJson));
             Assert.True(JToken.DeepEquals(fixture.FlattenedComplexJson.Unflatten(), fixture.ComplexJson));
+        }
+
+        [Fact]
+        private void Can_convert_a_flattened_dictionary_to_a_JSON_string()
+        {
+            var flattenedJsonDictToJsonString = fixture.FlattendSimpleJson.ToJsonString();
+            // Compare original JObject to the flattened dict converted to JSON
+            Assert.True(JToken.DeepEquals(fixture.SimpleJson, JObject.Parse(flattenedJsonDictToJsonString)));
+
+            var complexJsonDictToJsonString = fixture.FlattenedComplexJson.ToJsonString();
+            // Compare original JObject to the flattened dict converted to JSON
+            Assert.True(JToken.DeepEquals(fixture.ComplexJson, JObject.Parse(complexJsonDictToJsonString)));
+
+            flattenedJsonDictToJsonString = fixture.FlattendSimpleJson.ToJsonString(false);
+            // Compare original JObject to the flattened dict converted to JSON
+            Assert.True(JToken.DeepEquals(fixture.SimpleJson, JObject.Parse(flattenedJsonDictToJsonString)));
+
+            complexJsonDictToJsonString = fixture.FlattenedComplexJson.ToJsonString(false);
+            // Compare original JObject to the flattened dict converted to JSON
+            Assert.True(JToken.DeepEquals(fixture.ComplexJson, JObject.Parse(complexJsonDictToJsonString)));
         }
     }
 }
