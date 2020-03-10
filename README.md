@@ -4,6 +4,69 @@ Extension methods to flatten a JSON.NET `JObject` to an `IDictionary<string, obj
 
 # Usage   
 
+https://dotnetfiddle.net/jYghhm
+
+This:
+
+```json
+{
+  "$id": "https://example.com/arrays.schema.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "A representation of a person, company, organization, or place",
+  "type": "object",
+  "properties": {
+    "fruits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "vegetables": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/veggie" }
+    }
+  },
+  "definitions": {
+    "veggie": {
+      "type": "object",
+      "required": [ "veggieName", "veggieLike" ],
+      "properties": {
+        "veggieName": {
+          "type": "string",
+          "description": "The name of the vegetable."
+        },
+        "veggieLike": {
+          "type": "boolean",
+          "description": "Do I like this vegetable?"
+        }
+      }
+    }
+  }
+}
+```
+
+Becomes this:
+
+```json
+{
+    "$id": "https://example.com/arrays.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "description": "A representation of a person, company, organization, or place",
+    "type": "object",
+    "properties.fruits.type": "array",
+    "properties.fruits.items.type": "string",
+    "properties.vegetables.type": "array",
+    "properties.vegetables.items.$ref": "#/definitions/veggie",
+    "definitions.veggie.type": "object",
+    "definitions.veggie.required[0]": "veggieName",
+    "definitions.veggie.required[1]": "veggieLike",
+    "definitions.veggie.properties.veggieName.type": "string",
+    "definitions.veggie.properties.veggieName.description": "The name of the vegetable.",
+    "definitions.veggie.properties.veggieLike.type": "boolean",
+    "definitions.veggie.properties.veggieLike.description": "Do I like this vegetable?"
+}
+```
+
 ```csharp
 using System;
 using System.Collections.Generic;
