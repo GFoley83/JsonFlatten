@@ -1,0 +1,7 @@
+{
+  "outer": {
+    "inner.path": {
+      "another.inner.path": 123
+    }
+  }
+}

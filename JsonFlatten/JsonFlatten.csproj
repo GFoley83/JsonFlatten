@@ -11,6 +11,9 @@
     <PackageProjectUrl>https://github.com/GFoley83/JsonFlatten</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GFoley83/JsonFlatten</RepositoryUrl>
     <Version>1.0.1</Version>
+    <PackageVersion>1.0.2</PackageVersion>
+    <Title>JsonFlatten</Title>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
   </PropertyGroup>
 
   <ItemGroup>

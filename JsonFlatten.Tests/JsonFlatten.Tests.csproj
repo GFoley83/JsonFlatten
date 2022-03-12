@@ -76,6 +76,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="SampleJson\Complex.json" />
+    <None Include="SampleJson\PathWithDotNotation.json" />
     <None Include="SampleJson\Simple.json" />
   </ItemGroup>
   <ItemGroup>

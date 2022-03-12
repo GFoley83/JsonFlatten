@@ -80,8 +80,9 @@ public class Program
 		var json = @"{ 'array': [ 1, 2, 3 ], 'boolean': true, 'null': null, 'number': 123, 'object': { 'a': 'b', 'c': 'd', 'e': 'f' }, 'date': '2014-01-01T23:28:56.782Z', 'string': 'Hello World', 'emptyString': '', 'emptyObject': {}, 'emptyArray': [] }";
 		JObject jObj = JObject.Parse(json);
 		
-		// Flatten a JObject to a dictionary. var dic = jObj.Flatten(); also works.
+		// Flatten a JObject to a dictionary. 
 		Dictionary<string, object> flattened = new Dictionary<string, object>(jObj.Flatten());
+		// or var flattened = jObj.Flatten();
 		
 		// Retrieve and cast an item from the dictionary
 		var date = flattened.Get<DateTime>("date"); // 1/1/2014 11:28:56 PM

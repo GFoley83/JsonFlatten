@@ -13,7 +13,9 @@ namespace JsonFlatten
         /// </summary>
         /// <param name="jsonObject">JObject to flatten</param>
         /// <param name="includeNullAndEmptyValues">Set to false to ignore JSON properties that are null, "", [] and {} when flattening</param>
-        public static IDictionary<string, object> Flatten(this JObject jsonObject, bool includeNullAndEmptyValues = true) => jsonObject
+        public static IDictionary<string, object> Flatten(this JObject jsonObject, bool includeNullAndEmptyValues = true)
+        {
+            return jsonObject
                 .Descendants()
                 .Where(p => !p.Any())
                 .Aggregate(new Dictionary<string, object>(), (properties, jToken) =>
@@ -26,6 +28,7 @@ namespace JsonFlatten
                         {
                             properties.Add(jToken.Path, value);
                         }
+
                         return properties;
                     }
 
@@ -43,6 +46,7 @@ namespace JsonFlatten
 
                     return properties;
                 });
+        }
 
         /// <summary>
         /// Unflattens an already flattened JSON Dictionary to its original JSON structure
@@ -110,7 +114,7 @@ namespace JsonFlatten
         private static JContainer UnflattenSingle(KeyValuePair<string, object> keyValue)
         {
             var path = keyValue.Key;
-            JToken value = keyValue.Value != null ? JToken.FromObject(keyValue.Value) : null;
+            var value = keyValue.Value != null ? JToken.FromObject(keyValue.Value) : null;
             var pathSegments = SplitPath(path);
 
             JContainer lastItem = null;
@@ -145,12 +149,17 @@ namespace JsonFlatten
 
         private static IList<string> SplitPath(string path)
         {
+            var reg = path.IndexOf("['", StringComparison.Ordinal) > -1 
+                ? new Regex(@"(?!\.)([^\'\[\]]+)|(?!\[)(\d+)(?=\])") 
+                : new Regex(@"(?!\.)([^. ^\[\]]+)|(?!\[)(\d+)(?=\])");
+            
             var result = new List<string>();
-            var reg = new Regex(@"(?!\.)([^. ^\[\]]+)|(?!\[)(\d+)(?=\])");
+            
             foreach (Match match in reg.Matches(path))
             {
                 result.Add(match.Value);
             }
+            
             return result;
         }
 
