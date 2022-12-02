@@ -93,14 +93,14 @@ namespace JsonFlatten.Tests
         [Fact]
         private void Flattened_JObject_without_empty_values_has_correct_number_of_properties()
         {
-            Assert.True(fixture.FlattenedSimpleJsonWithoutEmpty.Count == 10);
+            Assert.True(fixture.FlattenedSimpleJsonWithoutEmpty.Count == 11);
             Assert.True(fixture.FlattenedComplexJsonWithoutEmpty.Count == 782);
         }
 
         [Fact]
         private void Flattened_JObject_has_correct_number_of_properties()
         {
-            Assert.True(fixture.FlattenedSimpleJson.Count == 14);
+            Assert.True(fixture.FlattenedSimpleJson.Count == 15);
             Assert.True(fixture.FlattenedComplexJson.Count == 879);
             Assert.True(fixture.FlattenedPathWithDotNotationJson.Count == 1);
         }

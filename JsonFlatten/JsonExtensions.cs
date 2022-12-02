@@ -137,8 +137,9 @@ namespace JsonFlatten
                     continue;
                 }
 
+                var segment = pathSegment.Trim('[').Trim(']');
                 var array = new JArray();
-                var index = GetArrayIndex(pathSegment);
+                var index = GetArrayIndex(segment);
                 array = FillEmpty(array, index);
                 array[index] = lastItem ?? value;
                 lastItem = array;
@@ -151,13 +152,24 @@ namespace JsonFlatten
         {
             var reg = path.IndexOf("['", StringComparison.Ordinal) > -1 
                 ? new Regex(@"(?!\.)([^\'\[\]]+)|(?!\[)(\d+)(?=\])") 
-                : new Regex(@"(?!\.)([^. ^\[\]]+)|(?!\[)(\d+)(?=\])");
-            
+                : new Regex(@"(?!\.)([^. ^]+)|(?!\[)(\d+)(?=\])");
+
             var result = new List<string>();
-            
+            var arrayElementRegex = new Regex(@"\w+\[\d+\]");
+
             foreach (Match match in reg.Matches(path))
             {
-                result.Add(match.Value);
+                var matchedValue = match.Value;
+
+                if (!arrayElementRegex.IsMatch(matchedValue))
+                {
+                    result.Add(matchedValue);
+                    continue;
+                }
+
+                var openParenthesisIndex = matchedValue.IndexOf("[", StringComparison.Ordinal);
+                result.Add(matchedValue.Substring(0, openParenthesisIndex));
+                result.Add(matchedValue.Substring(openParenthesisIndex, matchedValue.Length - openParenthesisIndex));
             }
             
             return result;
@@ -172,7 +184,8 @@ namespace JsonFlatten
             return array;
         }
 
-        private static bool IsJsonArray(string pathSegment) => int.TryParse(pathSegment, out var x);
+        private static bool IsJsonArray(string pathSegment)
+            => pathSegment.StartsWith("[") && pathSegment.EndsWith("]") && int.TryParse(pathSegment.Trim('[').Trim(']'), out _);
 
         private static int GetArrayIndex(string pathSegment)
         {

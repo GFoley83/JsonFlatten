@@ -16,5 +16,6 @@
   "string": "Hello World",
   "emptyObject": {},
   "emptyString": "",
-  "emptyArray": []
+  "emptyArray": [],
+  "1": "numeric node"
 }
