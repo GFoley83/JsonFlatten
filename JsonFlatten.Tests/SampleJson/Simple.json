@@ -16,5 +16,17 @@
   "string": "Hello World",
   "emptyObject": {},
   "emptyString": "",
-  "emptyArray": []
+  "emptyArray": [],
+  "1": "numeric node",
+  "Data": {
+    "Data": {
+      "Dimensions": {
+        "-00705309": {
+          "Width": {
+            "Min": 123
+          }
+        }
+      }
+    }
+  }
 }

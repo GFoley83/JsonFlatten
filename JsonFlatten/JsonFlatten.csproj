@@ -5,19 +5,27 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>GFoley83</Authors>
     <PackageTags>JSON, Flatten, Unflatten, Dictionary</PackageTags>
-    <Description>Flatten a JSON.NET JObject to a Dictionary&lt;string, object&gt; and vice versa.</Description>
+    <Description>Extension methods to flatten or unflatten a JSON.NET JObject to or from an IDictionary&lt;string, object&gt;.</Description>
     <AssemblyName>JsonFlatten</AssemblyName>
     <Copyright>https://opensource.org/licenses/MIT</Copyright>
     <PackageProjectUrl>https://github.com/GFoley83/JsonFlatten</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GFoley83/JsonFlatten</RepositoryUrl>
-    <Version>1.0.1</Version>
-    <PackageVersion>1.0.2</PackageVersion>
+    <Version>1.0.3</Version>
+    <PackageVersion>1.0.3</PackageVersion>
     <Title>JsonFlatten</Title>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>

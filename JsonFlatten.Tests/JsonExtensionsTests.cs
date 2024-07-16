@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Newtonsoft.Json.Linq;
 using Xunit;
 using Xunit.Priority;
 
@@ -9,8 +9,7 @@ namespace JsonFlatten.Tests
 {
     public class JsonFlattenFixture
     {
-        private static readonly string _filePath =
-            Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "..\\..\\SampleJson\\"));
+        private static readonly string _filePath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "..\\..\\SampleJson\\"));
 
         public JObject SimpleJson { get; set; }
         public JObject ComplexJson { get; set; }
@@ -60,13 +59,16 @@ namespace JsonFlatten.Tests
             Assert.Equal("b", fixture.FlattenedSimpleJson.Get<string>("object.a"));
             Assert.Equal(1, fixture.FlattenedSimpleJson.Get<long>("array[0]"));
 
+            Assert.Equal("numeric node", fixture.FlattenedSimpleJson.Get<string>("1"));
+            Assert.Equal(123, fixture.FlattenedSimpleJson.Get<long>("Data.Data.Dimensions.-00705309.Width.Min"));
+
             Assert.Equal("", fixture.FlattenedComplexJson.Get<string>("posts[0].featured_image"));
             Assert.Null(fixture.FlattenedComplexJson.Get<string>("posts[0].post_thumbnail"));
-            Assert.Equal(System.Linq.Enumerable.Empty<object>(),
-                fixture.FlattenedComplexJson.Get<object[]>("posts[0].publicize_URLs"));
+            Assert.Equal(System.Linq.Enumerable.Empty<object>(), fixture.FlattenedComplexJson.Get<object[]>("posts[0].publicize_URLs"));
             Assert.NotStrictEqual(new object(), fixture.FlattenedComplexJson.Get<object>("posts[0].tags"));
-            
+
             Assert.Equal(123, fixture.FlattenedPathWithDotNotationJson.Get<long>("outer['inner.path']['another.inner.path']"));
+            Assert.Equal(2, fixture.FlattenedPathWithDotNotationJson.Get<long>("outer['inner.path']['another.inner.path.array'][0].numbers[1]"));
         }
 
         [Fact]
@@ -93,16 +95,16 @@ namespace JsonFlatten.Tests
         [Fact]
         private void Flattened_JObject_without_empty_values_has_correct_number_of_properties()
         {
-            Assert.True(fixture.FlattenedSimpleJsonWithoutEmpty.Count == 10);
-            Assert.True(fixture.FlattenedComplexJsonWithoutEmpty.Count == 782);
+            Assert.Equal(12, fixture.FlattenedSimpleJsonWithoutEmpty.Count);
+            Assert.Equal(782, fixture.FlattenedComplexJsonWithoutEmpty.Count);
         }
 
         [Fact]
         private void Flattened_JObject_has_correct_number_of_properties()
         {
-            Assert.True(fixture.FlattenedSimpleJson.Count == 14);
-            Assert.True(fixture.FlattenedComplexJson.Count == 879);
-            Assert.True(fixture.FlattenedPathWithDotNotationJson.Count == 1);
+            Assert.Equal(16, fixture.FlattenedSimpleJson.Count);
+            Assert.Equal(879, fixture.FlattenedComplexJson.Count);
+            Assert.Equal(4, fixture.FlattenedPathWithDotNotationJson.Count);
         }
 
         [Fact]

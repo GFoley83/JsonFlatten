@@ -1,7 +1,10 @@
 {
   "outer": {
     "inner.path": {
-      "another.inner.path": 123
+      "another.inner.path": 123,
+      "another.inner.path.array": [
+        { "numbers": [1,2,3] }
+      ]
     }
   }
 }

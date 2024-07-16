@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
 namespace JsonFlatten
 {
@@ -24,7 +24,7 @@ namespace JsonFlatten
 
                     if (!includeNullAndEmptyValues)
                     {
-                        if (value?.Equals("") == false)
+                        if (value?.Equals(string.Empty) == false)
                         {
                             properties.Add(jToken.Path, value);
                         }
@@ -101,8 +101,7 @@ namespace JsonFlatten
         /// <returns></returns>
         public static bool TryGet<T>(this IDictionary<string, object> dictionary, string key, out T value)
         {
-            object result;
-            if (dictionary.TryGetValue(key, out result) && result is T)
+            if (dictionary.TryGetValue(key, out object result) && result is T)
             {
                 value = (T)result;
                 return true;
@@ -121,7 +120,7 @@ namespace JsonFlatten
             //build from leaf to root
             foreach (var pathSegment in pathSegments.Reverse())
             {
-                if (!IsJsonArray(pathSegment))
+                if (!IsJsonArray(path, pathSegment))
                 {
                     var obj = new JObject();
                     if (lastItem == null)
@@ -149,17 +148,17 @@ namespace JsonFlatten
 
         private static IList<string> SplitPath(string path)
         {
-            var reg = path.IndexOf("['", StringComparison.Ordinal) > -1 
-                ? new Regex(@"(?!\.)([^\'\[\]]+)|(?!\[)(\d+)(?=\])") 
+            var reg = path.IndexOf("['", StringComparison.Ordinal) > -1
+                ? new Regex(@"(?!\.)([^\'\[\]]+)|(?!\[)(\d+)(?=\])")
                 : new Regex(@"(?!\.)([^. ^\[\]]+)|(?!\[)(\d+)(?=\])");
-            
+
             var result = new List<string>();
-            
+
             foreach (Match match in reg.Matches(path))
             {
                 result.Add(match.Value);
             }
-            
+
             return result;
         }
 
@@ -172,7 +171,7 @@ namespace JsonFlatten
             return array;
         }
 
-        private static bool IsJsonArray(string pathSegment) => int.TryParse(pathSegment, out var x);
+        private static bool IsJsonArray(string path, string pathSegment) => path.Contains("[") && path.Contains("]") && int.TryParse(pathSegment, out _);
 
         private static int GetArrayIndex(string pathSegment)
         {
