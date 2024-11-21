@@ -10,11 +10,12 @@
     <Copyright>https://opensource.org/licenses/MIT</Copyright>
     <PackageProjectUrl>https://github.com/GFoley83/JsonFlatten</PackageProjectUrl>
     <RepositoryUrl>https://github.com/GFoley83/JsonFlatten</RepositoryUrl>
-    <Version>1.0.3</Version>
-    <PackageVersion>1.0.3</PackageVersion>
+    <Version>1.0.4</Version>
+    <PackageVersion>1.0.4</PackageVersion>
     <Title>JsonFlatten</Title>
     <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

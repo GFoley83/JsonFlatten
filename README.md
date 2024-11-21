@@ -2,6 +2,8 @@
 
 Extension methods to flatten or unflatten a JSON.NET `JObject` to or from an `IDictionary<string, object>`.
 
+This library is compatible with both .NET and .NET Framework.
+
 # Example  
 
 https://dotnetfiddle.net/jYghhm

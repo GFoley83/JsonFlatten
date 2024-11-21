@@ -13,7 +13,8 @@ namespace JsonFlatten
         /// </summary>
         /// <param name="jsonObject">JObject to flatten</param>
         /// <param name="includeNullAndEmptyValues">Set to false to ignore JSON properties that are null, "", [] and {} when flattening</param>
-        public static IDictionary<string, object> Flatten(this JObject jsonObject, bool includeNullAndEmptyValues = true)
+        public static IDictionary<string, object> Flatten(this JObject jsonObject,
+            bool includeNullAndEmptyValues = true)
         {
             return jsonObject
                 .Descendants()
@@ -71,6 +72,7 @@ namespace JsonFlatten
                     result.Merge(UnflattenSingle(pathValue), setting);
                 }
             }
+
             return result as JObject;
         }
 
@@ -89,7 +91,8 @@ namespace JsonFlatten
         /// <param name="dictionary"></param>
         /// <param name="key"></param>
         /// <param name="value"></param>
-        public static void Set(this IDictionary<string, object> dictionary, string key, object value) => dictionary[key] = value;
+        public static void Set(this IDictionary<string, object> dictionary, string key, object value) =>
+            dictionary[key] = value;
 
         /// <summary>
         /// Try get an item from the dictionary and cast it to a type. 
@@ -106,6 +109,7 @@ namespace JsonFlatten
                 value = (T)result;
                 return true;
             }
+
             value = default(T);
             return false;
         }
@@ -131,6 +135,7 @@ namespace JsonFlatten
                     {
                         obj.Add(pathSegment, lastItem);
                     }
+
                     lastItem = obj;
 
                     continue;
@@ -141,37 +146,64 @@ namespace JsonFlatten
                 array = FillEmpty(array, index);
                 array[index] = lastItem ?? value;
                 lastItem = array;
-
             }
+
             return lastItem;
         }
 
         private static IList<string> SplitPath(string path)
         {
-            var reg = path.IndexOf("['", StringComparison.Ordinal) > -1
-                ? new Regex(@"(?!\.)([^\'\[\]]+)|(?!\[)(\d+)(?=\])")
-                : new Regex(@"(?!\.)([^. ^\[\]]+)|(?!\[)(\d+)(?=\])");
+            var reg = new Regex(@"
+                (?<dotNotation>[^.\[\]]+)       # Matches property names in dot notation
+                |
+                \[(?:'(?<singleQuoted>[^']*)'   # Matches property names enclosed in single quotes
+                |
+                ""(?<doubleQuoted>[^""]*)""     # Matches property names enclosed in double quotes
+                |
+                (?<index>\d+))\]                # Matches array indices
+            ", RegexOptions.IgnorePatternWhitespace);
 
             var result = new List<string>();
 
             foreach (Match match in reg.Matches(path))
             {
-                result.Add(match.Value);
+                if (match.Groups["singleQuoted"].Success)
+                {
+                    // Property name enclosed in single quotes
+                    result.Add(match.Groups["singleQuoted"].Value);
+                }
+                else if (match.Groups["doubleQuoted"].Success)
+                {
+                    // Property name enclosed in double quotes
+                    result.Add(match.Groups["doubleQuoted"].Value);
+                }
+                else if (match.Groups["index"].Success)
+                {
+                    // Array index
+                    result.Add(match.Groups["index"].Value);
+                }
+                else if (match.Groups["dotNotation"].Success)
+                {
+                    // Property name in dot notation
+                    result.Add(match.Groups["dotNotation"].Value);
+                }
             }
 
             return result;
         }
-
+        
         private static JArray FillEmpty(JArray array, int index)
         {
             for (var i = 0; i <= index; i++)
             {
                 array.Add(null);
             }
+
             return array;
         }
 
-        private static bool IsJsonArray(string path, string pathSegment) => path.Contains("[") && path.Contains("]") && int.TryParse(pathSegment, out _);
+        private static bool IsJsonArray(string path, string pathSegment) =>
+            path.Contains("[") && path.Contains("]") && int.TryParse(pathSegment, out _);
 
         private static int GetArrayIndex(string pathSegment)
         {
@@ -179,6 +211,7 @@ namespace JsonFlatten
             {
                 return result;
             }
+
             throw new Exception($"Unable to parse array index: {pathSegment}");
         }
     }
